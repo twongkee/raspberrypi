@@ -48,7 +48,14 @@ if __name__ == '__main__':
     print("<html><body>")
     d = 1
     while d < n:
-        savefile=f"{outputpath}/diff_{d:04}.jpg"
+        inpath=flist[d].split("/")
+        del inpath[-1]
+        del inpath[0]
+        del inpath[0]
+        del inpath[0]
+        dpath="/".join(inpath)
+        # print(dpath)
+        savefile=f"{outputpath}/{dpath}/diff_{d:04}.jpg"
         hline=make_html_line(flist[d], flist[d-1], savefile, d)
         print(hline)
         d+=1

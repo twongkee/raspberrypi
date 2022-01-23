@@ -2,6 +2,8 @@ import os
 import PIL.Image as Image
 import PIL.ImageChops as ImageChops
 
+import imgcompare
+
 
 def compare_images(path_one, path_two, diff_save_location):
     """
@@ -13,16 +15,18 @@ def compare_images(path_one, path_two, diff_save_location):
     """
     image_one = Image.open(path_one)
     image_two = Image.open(path_two)
-
+    diff_percent = imgcompare.image_diff_percent(image_one, image_two)
     diff = ImageChops.difference(image_one, image_two)
-    #inv_diff = ImageChops.invert(diff)
-    
-    #if inv_diff.getbbox():
+    # inv_diff = ImageChops.invert(diff)
+
+    # if inv_diff.getbbox():
     #    inv_save_location = f"inv_{diff_save_location}"
     #    inv_diff.save(inv_save_location)
 
     if diff.getbbox():
         diff.save(diff_save_location)
+
+    return diff_percent
 
 
 if __name__ == "__main__":
@@ -42,6 +46,11 @@ if __name__ == "__main__":
     d = 1
     while d < n:
         savefile = f"diff_{d:04}.jpg"
-        compare_images(flist[d], flist[d - 1], savefile)
-        print(savefile)
+        diff_percent = compare_images(flist[d], flist[d - 1], savefile)
+        if diff_percent > 1.2:
+            flag = "****"
+        else:
+            flag = ""
+
+        print(f"{savefile}, {diff_percent} {flag}")
         d += 1
